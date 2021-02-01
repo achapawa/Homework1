@@ -3,12 +3,154 @@
  */
 package edu.isu.pawan.hw1p;
 
-public class App {
-    public String getGreeting() {
-        return "Hello World!";
+//Importing the libraries
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
+
+//Class App extends Application
+public class App extends Application {
+
+
+    @Override
+    public void start(Stage stage) {
+        //making appManager Object
+        appManager a1=new appManager();
+
+        //making comboBox object
+        ComboBox comboBox = new ComboBox();
+        comboBox.getItems().add("Computer");
+        comboBox.getItems().add("Chemistry");
+        comboBox.getItems().add("Physics");
+        comboBox.getItems().add("Mathematics");
+        comboBox.getItems().add("Botany");
+        comboBox.getItems().add("Zoology");
+        HBox hbox = new HBox(comboBox);
+
+        //Creating a GridPane container
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(10, 10, 10, 10));
+        grid.setVgap(5);
+        grid.setHgap(5);
+        grid.add(comboBox,0,0);
+
+        //Defining the text field ares
+        final TextField CourNum = new TextField();
+        CourNum.setPromptText("Enter your Course Number.");   //text areas for Course Number.
+        CourNum.setPrefColumnCount(10);
+        CourNum.getText();
+        GridPane.setConstraints(CourNum, 0, 1);
+        grid.getChildren().add(CourNum);
+        final TextField CourName = new TextField();
+        CourName.setPromptText("Enter your Course Name.");      //text area for Course Name
+        GridPane.setConstraints(CourName, 0, 2);
+        grid.getChildren().add(CourName);
+        final TextField CredNo = new TextField();
+        CredNo.setPrefColumnCount(15);
+        CredNo.setPromptText("Enter no. of Credits.");
+        GridPane.setConstraints(CredNo, 0, 3);
+        grid.getChildren().add(CredNo);
+//Defining the Submit button
+        Button Enter = new Button("Enter");
+        GridPane.setConstraints(Enter, 1, 0);
+        grid.getChildren().add(Enter);
+//Defining the Clear button
+        Button clear = new Button("Clear");
+        GridPane.setConstraints(clear, 1, 1);
+        grid.getChildren().add(clear);
+
+        Button dispAll=new Button("Display All Courses");
+        GridPane.setConstraints(dispAll,1,2);
+        grid.getChildren().add(dispAll);
+
+
+        //Adding a Label
+        final Label label = new Label();
+        label.setPadding(new Insets(10,10,10,10));
+        label.setFont(new Font("Arial", 20));
+        GridPane.setConstraints(label, 0, 5);
+        GridPane.setColumnSpan(label, 100);
+        grid.getChildren().add(label);
+        label.setWrapText(true);
+
+
+
+        //Setting an action for the Submit button
+        Enter.setOnAction(new EventHandler<ActionEvent>() {
+
+
+            int selectedIndex = comboBox.getSelectionModel().getSelectedIndex();
+            Object selectedItem = comboBox.getSelectionModel().getSelectedItem();
+
+
+
+            @Override
+            public void handle(ActionEvent e) {
+                if ((CredNo.getText() != null && !CredNo.getText().isEmpty())) {
+                    Course c1=new Course(comboBox.getSelectionModel().getSelectedItem(),Integer.parseInt(CourNum.getText()),CourName.getText(),Integer.parseInt(CredNo.getText()));
+                    Object comboElement=comboBox.getSelectionModel().getSelectedItem();
+                    String code=a1.getDepCode(comboBox.getSelectionModel().getSelectedItem().toString());
+                    String c2=c1.toString();
+                    a1.storeDetails(c2,code);
+                    CourNum.clear();
+                    CourName.clear();
+                    CredNo.clear();
+                    //String result =a1.getResult();
+                    // label.setText(result);
+
+
+                } else {
+                    label.setText("Please Enter Valid Texts");
+                }
+            }
+        });
+
+//Setting an action for the Clear button
+        clear.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent e) {
+                CourNum.clear();
+                CourName.clear();
+                CredNo.clear();
+                label.setText(null);
+            }
+        });
+
+        dispAll.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent e) {
+                String result = a1.getResult();
+                label.setText(result);
+            }
+        });
+
+        Group root = new Group(grid);
+        //Setting the stage
+        Scene scene = new Scene(root, 595, 150, Color.YELLOW);
+        stage.setTitle("The Course Display");
+        stage.setScene(scene);
+        stage.show();
+
     }
 
+
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        Application.launch(args);
+
     }
 }
+
